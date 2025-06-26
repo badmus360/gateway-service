@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: gateway
+  config:
+    import: "optional:configserver:http://configUser:configPass@localhost:8882"
+    fail-fast: true
+  cloud:
+    config:
+      username: configUser
+      password: configPass
+      retry:
+        initial-interval: 1000
+        max-interval: 2000
+        multiplier: 1.5
+        max-attempts: 3
