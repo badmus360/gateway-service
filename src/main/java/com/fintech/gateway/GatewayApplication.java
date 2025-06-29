@@ -17,6 +17,8 @@ public class GatewayApplication {
 	private String identityServiceUrl;
 	@Value("${app.route.bills}")
 	private String billsPaymentUrl;
+	@Value("${app.security.api-key}")
+	private String apiKey;
 
 
 	public static void main(String[] args) {
@@ -27,20 +29,20 @@ public class GatewayApplication {
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 		return builder.routes()
 				.route("transfer-service", r -> r.path("/api/transfer/**")
-						.filters(f -> f.addRequestHeader("X-powered-by", "buezcorp")
-						)
+						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
+								.rewritePath("/api/transfer/(?<segment>.*)", "/${segment}"))
 						.uri(fundTransferUrl))
 				.route("user-service", r -> r.path("/api/customer/**")
-						.filters(f -> f.addRequestHeader("X-powered-by", "buezcorp")
-						)
+						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
+								.rewritePath("/api/customer/(?<segment>.*)", "/api/${segment}"))
 						.uri(userManagementUrl))
 				.route("identity-service", r -> r.path("/api/identity/**")
-						.filters(f -> f.addRequestHeader("X-powered-by", "buezcorp")
-						)
+						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
+								.rewritePath("/api/identity/(?<segment>.*)", "/${segment}"))
 						.uri(identityServiceUrl))
 				.route("bills-service", r -> r.path("/api/bills/**")
-						.filters(f -> f.addRequestHeader("X-powered-by", "buezcorp")
-						)
+						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
+								.rewritePath("/api/bills/(?<segment>.*)", "/${segment}"))
 						.uri(billsPaymentUrl))
 				.build();
 	}
