@@ -31,24 +31,28 @@ public class GatewayApplication {
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 		return builder.routes()
 				.route("transfer", r -> r.path("/api/transfer/**")
-						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
-								.removeRequestHeader("Cookie") // Security best practice
+						.filters(f -> f.removeRequestHeader("X-API-KEY")
+								.addRequestHeader("X-API-KEY", apiKey)
+								.removeRequestHeader("Cookie")
 								.rewritePath("/api/transfer/(?<segment>.*)", "/${segment}"))
 						.uri(fundTransferUrl))
 				.route("usermanagement", r -> r.path("/api/customer/**")
-						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
-								.removeRequestHeader("Cookie") // Security best practice
-								.rewritePath("/api/customer/(?<segment>.*)", "/api/${segment}"))
+						.filters(f -> f.removeRequestHeader("X-API-KEY")
+								.addRequestHeader("X-API-KEY", apiKey)
+								.removeRequestHeader("Cookie")
+								.rewritePath("/api/transfer/(?<segment>.*)", "/${segment}"))
 						.uri(userManagementUrl))
 				.route("identityservice", r -> r.path("/api/identity/**")
-						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
-								.removeRequestHeader("Cookie") // Security best practice
-								.rewritePath("/api/identity/(?<segment>.*)", "/${segment}"))
+						.filters(f -> f.removeRequestHeader("X-API-KEY")
+								.addRequestHeader("X-API-KEY", apiKey)
+								.removeRequestHeader("Cookie")
+								.rewritePath("/api/transfer/(?<segment>.*)", "/${segment}"))
 						.uri(identityServiceUrl))
 				.route("billspayment", r -> r.path("/api/bills/**")
-						.filters(f -> f.addRequestHeader("X-API-KEY", apiKey)
-								.removeRequestHeader("Cookie") // Security best practice
-								.rewritePath("/api/bills/(?<segment>.*)", "/${segment}"))
+						.filters(f -> f.removeRequestHeader("X-API-KEY")
+								.addRequestHeader("X-API-KEY", apiKey)
+								.removeRequestHeader("Cookie")
+								.rewritePath("/api/transfer/(?<segment>.*)", "/${segment}"))
 						.uri(billsPaymentUrl))
 				.build();
 	}
